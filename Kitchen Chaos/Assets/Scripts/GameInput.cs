@@ -2,10 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class GameInput : MonoBehaviour
 {
     // float keyInputx = 0, keyInputy = 0;
     private Vector2 keyInput = new Vector2(0,0);
+
+    private bool checkInputInteract = false;
+
+
+    
     public Vector2 GetInputGerakkanNormalized(){
         // keyInputx = 0, keyInputy = 0;
         keyInput.Set(0,0);
@@ -19,4 +25,19 @@ public class GameInput : MonoBehaviour
 
         return keyInput;
     }
+
+    public bool GetInputInteract(){
+        if(Input.GetKey(KeyCode.E)) {
+            checkInputInteract = true; 
+        }
+        else{
+            checkInputInteract = false;
+        }
+        return checkInputInteract;
+
+        // if(Input.GetKey(KeyCode.E)) {
+        //     interactAct?.Invoke(this, EventArgs.Empty);
+        // }
+    }
+
 }
