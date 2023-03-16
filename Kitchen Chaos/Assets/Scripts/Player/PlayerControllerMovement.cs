@@ -41,14 +41,14 @@ public class PlayerControllerMovement : MonoBehaviour
 
             //coba gerak ke kiri kanan
             Vector3 arahPerpindahanHorizontal = new Vector3(arahPerpindahan.x, 0f, 0f).normalized;
-            bisaGerak = collis.GetBisaGerak(arahPerpindahanHorizontal);
+            bisaGerak = arahPerpindahan.x != 0 && collis.GetBisaGerak(arahPerpindahanHorizontal);
             if(bisaGerak){
                 arahPerpindahan = arahPerpindahanHorizontal;
             }
             else{
                 //coba gerak atas bawah 
                 Vector3 arahPerpindahanVertikal = new Vector3(0f, 0f, arahPerpindahan.z).normalized;
-                bisaGerak = collis.GetBisaGerak(arahPerpindahanVertikal);
+                bisaGerak = arahPerpindahan.z != 0 && collis.GetBisaGerak(arahPerpindahanVertikal);
                 if(bisaGerak){{
                     arahPerpindahan = arahPerpindahanVertikal;
                 }}

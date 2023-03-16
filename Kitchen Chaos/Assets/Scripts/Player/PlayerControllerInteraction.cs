@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 //another srp - ngatur interaction karakter player dgn segala objek
-public class PlayerControllerInteraction : MonoBehaviour
+public class PlayerControllerInteraction : MonoBehaviour, IKitchenObjParent
 {
     public static PlayerControllerInteraction Instance {get; private set;}
     private Vector2 keyInput = new Vector2(0,0);
@@ -19,15 +19,20 @@ public class PlayerControllerInteraction : MonoBehaviour
 
     [SerializeField]private LayerMask listObjekBisaInteract;
 
-    private CounterControllerInteraction counterTerpilih;
+    private BaseCounter counterTerpilih;
 
 
     //Event Interact
-    public event EventHandler OnInteractAct;
+    public event EventHandler OnInteractAct;//interactbiasa
+    public event EventHandler OnInteractCutting;//interactpotong
     public event EventHandler<OnSelectedCounterEventArgs> OnSelectedCounter;
     public class OnSelectedCounterEventArgs : EventArgs{
-        public CounterControllerInteraction counterTerpilih;
+        public BaseCounter counterTerpilih;
     }
+
+    //KitchenObjectInteract
+    [SerializeField]private Transform kitchenObjHoldPlace;
+    private KitchenObject kitchenObject;
 
     private void Awake() {
         Instance = this;
@@ -35,7 +40,7 @@ public class PlayerControllerInteraction : MonoBehaviour
 
     private void Start() {
         OnInteractAct += InteraksiController_OnInteractAct;
-
+        OnInteractCutting += InteraksiController_OnInteractCutting;
     }
 
 
@@ -45,6 +50,9 @@ public class PlayerControllerInteraction : MonoBehaviour
         if(inputKey.GetInputInteract()){
             OnInteractAct?.Invoke(this, EventArgs.Empty);
         }
+        if(inputKey.GetInputInteractLain()){
+            OnInteractCutting?.Invoke(this, EventArgs.Empty);
+        }
     }
 
 
@@ -52,7 +60,14 @@ public class PlayerControllerInteraction : MonoBehaviour
     private void InteraksiController_OnInteractAct(object sender, System.EventArgs e){
         // counterTerpilih.interactWithCounter();
         if(counterTerpilih){
-            counterTerpilih.interactCounter();
+            counterTerpilih.InteractCounter(this);
+        }
+        // Debug.Log(counterTerpilih.transform);
+    }
+    private void InteraksiController_OnInteractCutting(object sender, System.EventArgs e){
+        // counterTerpilih.interactWithCounter();
+        if(counterTerpilih){
+            counterTerpilih.InteractCounterLain(this);
         }
         // Debug.Log(counterTerpilih.transform);
     }
@@ -67,9 +82,9 @@ public class PlayerControllerInteraction : MonoBehaviour
         // Debug.Log("yak" + arahPerpindahanTerakhir);
 
         if(Physics.Raycast(transform.position, arahPerpindahanTerakhir, out RaycastHit cekObjek, jarakInteraksi)){
-            if(cekObjek.transform.TryGetComponent(out CounterControllerInteraction counters)){
-                if(counters != counterTerpilih){
-                    selectedCounterEvent(counters);
+            if(cekObjek.transform.TryGetComponent(out BaseCounter counter)){
+                if(counter != counterTerpilih){
+                    selectedCounterEvent(counter);
                     // counterTerpilih.interactWithCounter();
                 }
                 
@@ -85,10 +100,30 @@ public class PlayerControllerInteraction : MonoBehaviour
         // Debug.DrawRay(transform.position, Vector3.forward, Color.green);
     }
 
-    private void selectedCounterEvent(CounterControllerInteraction counterTerpilih){
+    private void selectedCounterEvent(BaseCounter counterTerpilih){
         this.counterTerpilih = counterTerpilih; 
         OnSelectedCounter?.Invoke(this, new OnSelectedCounterEventArgs{
             counterTerpilih = counterTerpilih
         });
+    }
+
+    public Transform GetKitchenObjectNewPlace(){
+        return kitchenObjHoldPlace;
+    }
+
+    public void SetKitchenObject(KitchenObject kitchenObject){
+        this.kitchenObject = kitchenObject;
+    }
+
+    public KitchenObject GetKitchenObject(){
+        return kitchenObject;
+    }
+
+    //bersihin kitchen object lama
+    public void ClearKitchenObject(){
+        kitchenObject = null;
+    }
+    public bool HasKitchenObject(){
+        return (kitchenObject != null);
     }
 }

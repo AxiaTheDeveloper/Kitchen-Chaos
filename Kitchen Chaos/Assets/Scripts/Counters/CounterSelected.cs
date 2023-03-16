@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CounterSelected : MonoBehaviour
 {
-    [SerializeField]private CounterControllerInteraction counterr;
-    [SerializeField]private GameObject visualTerpilih;
+    [SerializeField]private BaseCounter counterr;
+    [SerializeField]private GameObject[] visualTerpilih;
     private void Start() {
         PlayerControllerInteraction.Instance.OnSelectedCounter += Player_OnSelectedCounter;
     }
@@ -20,9 +20,13 @@ public class CounterSelected : MonoBehaviour
         }
     }
     private void muncul(){
-        visualTerpilih.SetActive(true);
+        foreach(GameObject visualSelect in visualTerpilih){
+            visualSelect.SetActive(true);
+        } 
     }
     private void hilang(){
-        visualTerpilih.SetActive(false);
+        foreach(GameObject visualSelect in visualTerpilih) {
+            visualSelect.SetActive(false);
+        }
     }
 }

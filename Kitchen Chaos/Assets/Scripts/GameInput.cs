@@ -9,6 +9,7 @@ public class GameInput : MonoBehaviour
     private Vector2 keyInput = new Vector2(0,0);
 
     private bool checkInputInteract = false;
+    private bool checkInputInteractLain = false;
 
 
     
@@ -27,7 +28,7 @@ public class GameInput : MonoBehaviour
     }
 
     public bool GetInputInteract(){
-        if(Input.GetKey(KeyCode.E)) {
+        if(Input.GetKeyDown(KeyCode.E)) {
             checkInputInteract = true; 
         }
         else{
@@ -38,6 +39,15 @@ public class GameInput : MonoBehaviour
         // if(Input.GetKey(KeyCode.E)) {
         //     interactAct?.Invoke(this, EventArgs.Empty);
         // }
+    }
+    public bool GetInputInteractLain(){
+        if(Input.GetKeyDown(KeyCode.F)) {
+            checkInputInteractLain = true; 
+        }
+        else{
+            checkInputInteractLain = false;
+        }
+        return checkInputInteractLain;
     }
 
 }

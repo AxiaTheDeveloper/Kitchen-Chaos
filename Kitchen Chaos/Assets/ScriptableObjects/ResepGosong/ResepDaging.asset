@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c5ae4fe67ecdff40bdc75e004f51837, type: 3}
+  m_Name: ResepDaging
+  m_EditorClassIdentifier: 
+  hasilJadi: {fileID: 11400000, guid: a550fe75acf875547804d6022dbbc907, type: 2}
+  hasilGosong: {fileID: 11400000, guid: 7bdcd9a5e92c8f3448632e1ba0932db8, type: 2}
+  durasiMasakGosong: 5
