@@ -6,6 +6,7 @@ using System;
 //another srp - ngatur interaction karakter player dgn segala objek
 public class PlayerControllerInteraction : MonoBehaviour, IKitchenObjParent
 {
+
     public static PlayerControllerInteraction Instance {get; private set;}
     private Vector2 keyInput = new Vector2(0,0);
     private Vector3 arahPerpindahan = new Vector3(0,0,0);
@@ -25,6 +26,10 @@ public class PlayerControllerInteraction : MonoBehaviour, IKitchenObjParent
     //Event Interact
     public event EventHandler OnInteractAct;//interactbiasa
     public event EventHandler OnInteractCutting;//interactpotong
+
+    //sound
+    public event EventHandler OnPickedObjSound;
+
     public event EventHandler<OnSelectedCounterEventArgs> OnSelectedCounter;
     public class OnSelectedCounterEventArgs : EventArgs{
         public BaseCounter counterTerpilih;
@@ -59,6 +64,7 @@ public class PlayerControllerInteraction : MonoBehaviour, IKitchenObjParent
 
     private void InteraksiController_OnInteractAct(object sender, System.EventArgs e){
         // counterTerpilih.interactWithCounter();
+        if(!KitchenGameManager.Instance.IsGameStart()) return;
         if(counterTerpilih){
             counterTerpilih.InteractCounter(this);
         }
@@ -66,6 +72,7 @@ public class PlayerControllerInteraction : MonoBehaviour, IKitchenObjParent
     }
     private void InteraksiController_OnInteractCutting(object sender, System.EventArgs e){
         // counterTerpilih.interactWithCounter();
+        if(!KitchenGameManager.Instance.IsGameStart()) return;
         if(counterTerpilih){
             counterTerpilih.InteractCounterLain(this);
         }
@@ -113,6 +120,9 @@ public class PlayerControllerInteraction : MonoBehaviour, IKitchenObjParent
 
     public void SetKitchenObject(KitchenObject kitchenObject){
         this.kitchenObject = kitchenObject;
+        if(kitchenObject != null){
+            OnPickedObjSound?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public KitchenObject GetKitchenObject(){

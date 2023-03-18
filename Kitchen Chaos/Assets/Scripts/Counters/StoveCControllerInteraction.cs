@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class StoveCControllerInteraction : BaseCounter
+public class StoveCControllerInteraction : BaseCounter, IObjectHasProgress
 {
 
     //event time
+    public event EventHandler<IObjectHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
     public class OnStateChangedEventArgs : EventArgs{
         public StateKompor state;
@@ -34,6 +35,9 @@ public class StoveCControllerInteraction : BaseCounter
             // 
             if(state == StateKompor.Memasak){
                 masakTimerJadi += Time.deltaTime;
+
+                OnProgressChanged?.Invoke(this, new IObjectHasProgress.OnProgressChangedEventArgs{progressNormalized = (float)masakTimerJadi / resepMasakSO.durasiMasak});
+
                 if(masakTimerJadi >= resepMasakSO.durasiMasak){
                     GetKitchenObject().DestroySelf();
                     KitchenObject.SpawnKitchenObj(resepMasakSO.hasilJadi, this);
@@ -47,12 +51,17 @@ public class StoveCControllerInteraction : BaseCounter
             }
             else if(state == StateKompor.Jadi){
                 masakTimerGosong += Time.deltaTime;
+
+                OnProgressChanged?.Invoke(this, new IObjectHasProgress.OnProgressChangedEventArgs{progressNormalized = (float)masakTimerGosong / resepGosongSO.durasiMasakGosong});
+
                 if(masakTimerGosong >= resepGosongSO.durasiMasakGosong){
                     GetKitchenObject().DestroySelf();
                     KitchenObject.SpawnKitchenObj(resepGosongSO.hasilGosong, this);
 
                     state = StateKompor.Gosong;
                     eventEffect();
+
+                    OnProgressChanged?.Invoke(this, new IObjectHasProgress.OnProgressChangedEventArgs{progressNormalized = 0f});
                 }
             }
             
@@ -69,6 +78,8 @@ public class StoveCControllerInteraction : BaseCounter
                     state = StateKompor.Memasak;
                     masakTimerJadi = 0f;
                     eventEffect();
+
+                    OnProgressChanged?.Invoke(this, new IObjectHasProgress.OnProgressChangedEventArgs{progressNormalized = (float)masakTimerJadi / resepMasakSO.durasiMasak});
                 }
                 
                 
@@ -80,7 +91,23 @@ public class StoveCControllerInteraction : BaseCounter
             if(!player.HasKitchenObject()){
                 GetKitchenObject().SetParent(player);
                 state = StateKompor.Idle;
+                // masakTimerJadi = 0f;
                 eventEffect();
+
+                OnProgressChanged?.Invoke(this, new IObjectHasProgress.OnProgressChangedEventArgs{progressNormalized = 0f});
+            }
+            else{
+                if(player.GetKitchenObject().TryGetPlate(out PlateKitchenObj plateKitchenObj)){
+                    if(plateKitchenObj.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO())){
+                        GetKitchenObject().DestroySelf();
+                        state = StateKompor.Idle;
+                        // masakTimerJadi = 0f;
+                        eventEffect();
+
+                        OnProgressChanged?.Invoke(this, new IObjectHasProgress.OnProgressChangedEventArgs{progressNormalized = 0f});
+                    }
+                    
+                }
             }
             
         }
@@ -125,5 +152,9 @@ public class StoveCControllerInteraction : BaseCounter
 
     private void eventEffect(){
         OnStateChanged?.Invoke(this, new OnStateChangedEventArgs{state = state});
+    }
+
+    public bool IsJadi(){
+        return state == StateKompor.Jadi;
     }
 }

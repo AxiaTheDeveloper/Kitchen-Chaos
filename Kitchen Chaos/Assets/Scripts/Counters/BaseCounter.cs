@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class BaseCounter : MonoBehaviour, IKitchenObjParent
 {
+    //event sound
+    public static event EventHandler OnPlaceObjSound;
+    public static void resetStaticData(){
+        OnPlaceObjSound = null;
+    }
     [SerializeField]private Transform spawnPoint;
     private KitchenObject kitchenObject;
     public virtual void InteractCounter(PlayerControllerInteraction player){
@@ -19,6 +25,9 @@ public class BaseCounter : MonoBehaviour, IKitchenObjParent
 
     public void SetKitchenObject(KitchenObject kitchenObject){
         this.kitchenObject = kitchenObject;
+        if(kitchenObject != null){
+            OnPlaceObjSound?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public KitchenObject GetKitchenObject(){

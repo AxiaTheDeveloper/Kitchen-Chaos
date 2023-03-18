@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CuttingProgressBarUI : MonoBehaviour
+public class ProgressBarUI : MonoBehaviour
 {
-    [SerializeField]private IObjectHasProgress hasProgress;
+    [SerializeField]private GameObject hasProgressGameObj;
     [SerializeField]private Image bar;
+    private IObjectHasProgress hasProgress;
     private void Start() {
+        hasProgress = hasProgressGameObj.GetComponent<IObjectHasProgress>();
         hasProgress.OnProgressChanged += hasProgress_OnProgressChanged;
         bar.fillAmount = 0f;
         hilang();

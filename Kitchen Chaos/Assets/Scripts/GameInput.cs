@@ -6,21 +6,33 @@ using UnityEngine;
 public class GameInput : MonoBehaviour
 {
     // float keyInputx = 0, keyInputy = 0;
+
+    public static GameInput Instance {get; private set;}
     private Vector2 keyInput = new Vector2(0,0);
 
     private bool checkInputInteract = false;
     private bool checkInputInteractLain = false;
+    private bool checkInputPause = false;
 
-
+    [SerializeField]KeyGameInputManager keyGameInputManager;
+    
+    private void Awake() {
+        Instance = this;
+        
+        // keyGameInputManager = KeyGameInputManager.Instance;
+    }
+    // private void Update() {
+    //     Debug.Log(keyGameInputManager.GetKeyBinding(KeyGameInputManager.KeyBinding.moveUp));
+    // }
     
     public Vector2 GetInputGerakkanNormalized(){
         // keyInputx = 0, keyInputy = 0;
         keyInput.Set(0,0);
 
-        if(Input.GetKey(KeyCode.W)) keyInput.y = 1;
-        if(Input.GetKey(KeyCode.S)) keyInput.y = -1;
-        if(Input.GetKey(KeyCode.D)) keyInput.x = 1;
-        if(Input.GetKey(KeyCode.A)) keyInput.x = -1;
+        if(keyGameInputManager.GetKeyCode(KeyGameInputManager.KeyBinding.moveUp)) keyInput.y = 1;
+        if(keyGameInputManager.GetKeyCode(KeyGameInputManager.KeyBinding.moveDown)) keyInput.y = -1;
+        if(keyGameInputManager.GetKeyCode(KeyGameInputManager.KeyBinding.moveRight)) keyInput.x = 1;
+        if(keyGameInputManager.GetKeyCode(KeyGameInputManager.KeyBinding.moveLeft)) keyInput.x = -1;
     
         keyInput = keyInput.normalized; //biar kalau gerak diagonal ga lebih cepat dari gerak hrzntl/vrtkl
 
@@ -28,7 +40,7 @@ public class GameInput : MonoBehaviour
     }
 
     public bool GetInputInteract(){
-        if(Input.GetKeyDown(KeyCode.E)) {
+        if(keyGameInputManager.GetKeyCodeDown(KeyGameInputManager.KeyBinding.interact)) {
             checkInputInteract = true; 
         }
         else{
@@ -41,7 +53,7 @@ public class GameInput : MonoBehaviour
         // }
     }
     public bool GetInputInteractLain(){
-        if(Input.GetKeyDown(KeyCode.F)) {
+        if(keyGameInputManager.GetKeyCodeDown(KeyGameInputManager.KeyBinding.interactLain)) {
             checkInputInteractLain = true; 
         }
         else{
@@ -49,5 +61,16 @@ public class GameInput : MonoBehaviour
         }
         return checkInputInteractLain;
     }
+    public bool GetInputPause(){
+        if(keyGameInputManager.GetKeyCodeDown(KeyGameInputManager.KeyBinding.Pause)) {
+            checkInputPause = true; 
+        }
+        else{
+            checkInputPause = false;
+        }
+        return checkInputPause;
+    }
+
+    
 
 }

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72200aa664b1fd241bae1e5d8839066e, type: 3}
+  m_Name: ListPesanan
+  m_EditorClassIdentifier: 
+  pesananSOList:
+  - {fileID: 11400000, guid: 9e85e7a11046577429dd2848b6198bf3, type: 2}
+  - {fileID: 11400000, guid: b0b9671fafcbe5b4e8dc9cc76255ac42, type: 2}
+  - {fileID: 11400000, guid: 1e033f9a8b0ffe84c8129ac7b0ddbfd5, type: 2}
+  - {fileID: 11400000, guid: 37eacbc3b3f3f294cbc7f19a49840e67, type: 2}

@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class CuttingCControllerInteraction : BaseCounter
+public class CuttingCControllerInteraction : BaseCounter, IObjectHasProgress
 {
-    //event utk bar
-    public event EventHandler<OnProgressChangedEventArgs> OnProgressChanged;
-    public class OnProgressChangedEventArgs : EventArgs{
-        public float progressNormalized;
+    //event sound
+    public static event EventHandler OnAnyCutSound;
+    new public static void resetStaticData(){
+        OnAnyCutSound = null;
     }
+    //event utk bar
+    public event EventHandler<IObjectHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     //event animasi
     public event EventHandler OnPlayerCutObj;
     
@@ -25,7 +27,7 @@ public class CuttingCControllerInteraction : BaseCounter
                     player.GetKitchenObject().SetParent(this);
                     
                     resepPotongSO = GetResepPotongSO(GetKitchenObject().GetKitchenObjectSO());
-                    OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs{progressNormalized = (float)banyakProgessPotong / resepPotongSO.totalPotongan});
+                    OnProgressChanged?.Invoke(this, new IObjectHasProgress.OnProgressChangedEventArgs{progressNormalized = (float)banyakProgessPotong / resepPotongSO.totalPotongan});
                 }
                 
                 
@@ -36,7 +38,16 @@ public class CuttingCControllerInteraction : BaseCounter
             // Debug.Log(GetKitchenObject().transform);
             if(!player.HasKitchenObject()){
                 GetKitchenObject().SetParent(player);
-                banyakProgessPotong = 0;
+                // banyakProgessPotong = 0;
+                OnProgressChanged?.Invoke(this, new IObjectHasProgress.OnProgressChangedEventArgs{progressNormalized = 0f});
+            }
+            else{
+                if(player.GetKitchenObject().TryGetPlate(out PlateKitchenObj plateKitchenObj)){
+                    if(plateKitchenObj.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO())){
+                        GetKitchenObject().DestroySelf();
+                    }
+                    
+                }
             }
             
             
@@ -50,8 +61,10 @@ public class CuttingCControllerInteraction : BaseCounter
             // Debug.Log(banyakProgessPotong);
             resepPotongSO = GetResepPotongSO(GetKitchenObject().GetKitchenObjectSO());
             OnPlayerCutObj?.Invoke(this,EventArgs.Empty);
+            OnAnyCutSound?.Invoke(this,EventArgs.Empty);
+            
 
-            OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs{progressNormalized = (float)banyakProgessPotong / resepPotongSO.totalPotongan});
+            OnProgressChanged?.Invoke(this, new IObjectHasProgress.OnProgressChangedEventArgs{progressNormalized = (float)banyakProgessPotong / resepPotongSO.totalPotongan});
 
             if(banyakProgessPotong >= resepPotongSO.totalPotongan){
                 KitchenScriptableObject hasilPotong = GetHasilPotong(GetKitchenObject().GetKitchenObjectSO());

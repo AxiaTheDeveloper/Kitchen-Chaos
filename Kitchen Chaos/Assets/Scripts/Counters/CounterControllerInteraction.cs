@@ -18,7 +18,24 @@ public class CounterControllerInteraction : BaseCounter
             
         }
         else{
-            if(!player.HasKitchenObject()){
+            if(player.HasKitchenObject()){
+                if(player.GetKitchenObject().TryGetPlate(out PlateKitchenObj plateKitchenObj)){
+                    //plate
+                    if(plateKitchenObj.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO())){
+                        GetKitchenObject().DestroySelf();
+                    }
+                    
+                }
+                else{
+                    //no plate
+                    if(GetKitchenObject().TryGetPlate(out  plateKitchenObj)){
+                        if(plateKitchenObj.TryAddIngredient(player.GetKitchenObject().GetKitchenObjectSO())){
+                            player.GetKitchenObject().DestroySelf();
+                        }
+                    }
+                }
+            }
+            else{
                 GetKitchenObject().SetParent(player);
             }
             
