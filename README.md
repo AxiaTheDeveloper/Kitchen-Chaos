@@ -1,5 +1,7 @@
 # Kitchen Chaos
 
+[Kitchen Chaos Itch.io Link](https://axiathedeveloper.itch.io/kitchenchaos?secret=JWgR6SY4R1xuLvOVByQjhntudSM) **(Windows Only)**
+
 IMPLEMENTASI SOLID
 
 SRP (Single Responsibility Principle) 
